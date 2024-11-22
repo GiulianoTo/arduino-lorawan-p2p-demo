@@ -4,16 +4,20 @@
  ********************************************************/
 
 #include "SoftwareSerial.h"
+
 #define P2P_TRANFER_MODE_RECEIVER 1
 #define P2P_TRANFER_MODE_SENDER 2
 #define LORA_WORKING_MODE_P2P 1
 
-int RESET_PIN = 12;
-#define DEFAULT_SERIAL_TIMEOUT 1000
 #define TXpin 11  // Set the virtual serial port pins
 #define RXpin 10
+#define RESET_PIN 12
+
+#define DEFAULT_SERIAL_TIMEOUT 1000
+
 #define DebugSerial Serial
 SoftwareSerial ATSerial(RXpin, TXpin);  // Declare a virtual serial port
+
 int msg_count;
 
 void board_reset(bool showWelcomeMsg) {
@@ -153,10 +157,12 @@ bool send_p2p_data(String msg) {
   stringToHexVector(msg, hexVector);
 
   String command = "at+send=lorap2p:";
+  //DebugSerial.print(command);
+  //DebugSerial.println(hexVector);
   ATSerial.print(command);
   ATSerial.println(hexVector);
   String s = ATSerial.readString();
-  DebugSerial.println(s);
+  //DebugSerial.println(s);
   if (s.indexOf("OK") != -1) {
     return true;
   } else {
@@ -172,6 +178,30 @@ void generate_p2p_message(void) {
     DebugSerial.println("Error: unable to send p2p data !! ");
 
   DebugSerial.println(s);
+}
+
+void receive_p2p_message(void) {
+  ATSerial.setTimeout(3000);
+  String s = ATSerial.readStringUntil('\l');
+  s.trim();
+  int i = s.indexOf(":");
+  if (i > 0) {
+    //DebugSerial.println(s);
+    s.remove(0, i + 1);
+    //DebugSerial.println(s);
+
+    // Calcola la lunghezza necessaria per la stringa originale
+    int originalLength = s.length() / 2 + 1;  // Ogni 2 caratteri esadecimali corrispondono a 1 byte
+
+    // Crea un array per contenere la stringa originale
+    char originalString[originalLength];
+    memset(originalString, 0, originalLength);  // Inizializza il vettore con zeri
+
+    // Converti la stringa esadecimale in stringa originale
+    hexToString(s, originalString);
+
+    DebugSerial.println(originalString);
+  }
 }
 
 void setup() {
@@ -217,54 +247,5 @@ void setup() {
 }
 
 void loop() {
-
-
-  String s = ATSerial.readStringUntil('\0');
-  s.trim();
-  int i = s.indexOf(":");
-  if (i > 0) {
-    DebugSerial.println(s);
-    s.remove(0, i + 1);
-    DebugSerial.println(s);
-
-    // Calcola la lunghezza necessaria per la stringa originale
-    int originalLength = s.length() / 2 + 1;  // Ogni 2 caratteri esadecimali corrispondono a 1 byte
-
-    // Crea un array per contenere la stringa originale
-    char originalString[originalLength];
-    memset(originalString, 0, originalLength);  // Inizializza il vettore con zeri
-
-    // Converti la stringa esadecimale in stringa originale
-    hexToString(s, originalString);
-
-    DebugSerial.println(originalString);
-  }
-  delay(4000);
-}
-
-
-
-
-void xxx() {
-  // Avvia la comunicazione seriale
-  Serial.begin(9600);
-
-  // Stringa esadecimale di esempio
-  String hexString = "48656C6C6F2C20576F726C6421";
-
-  // Calcola la lunghezza necessaria per la stringa originale
-  int originalLength = hexString.length() / 2 + 1;  // Ogni 2 caratteri esadecimali corrispondono a 1 byte
-
-  // Crea un array per contenere la stringa originale
-  char originalString[originalLength];
-  memset(originalString, 0, originalLength);  // Inizializza il vettore con zeri
-
-  // Converti la stringa esadecimale in stringa originale
-  hexToString(hexString, originalString);
-
-  // Stampa il risultato
-  Serial.println("Stringa esadecimale:");
-  Serial.println(hexString);
-  Serial.println("Stringa originale:");
-  Serial.println(originalString);
+  receive_p2p_message();
 }

@@ -4,16 +4,20 @@
  ********************************************************/
 
 #include "SoftwareSerial.h"
+
 #define P2P_TRANFER_MODE_RECEIVER 1
 #define P2P_TRANFER_MODE_SENDER 2
 #define LORA_WORKING_MODE_P2P 1
 
-int RESET_PIN = 12;
-#define DEFAULT_SERIAL_TIMEOUT 1000
 #define TXpin 11  // Set the virtual serial port pins
 #define RXpin 10
+#define RESET_PIN 12
+
+#define DEFAULT_SERIAL_TIMEOUT 1000
+
 #define DebugSerial Serial
 SoftwareSerial ATSerial(RXpin, TXpin);  // Declare a virtual serial port
+
 int msg_count;
 
 void board_reset(bool showWelcomeMsg) {
@@ -120,6 +124,26 @@ void stringToHexVector(String inputString, char *hexVector) {
   }
 }
 
+/**
+ * Converte una stringa di valori esadecimali in una stringa originale.
+ * 
+ * @param hexString La stringa esadecimale da convertire.
+ * @param originalString Il vettore in cui memorizzare la stringa originale.
+ */
+void hexToString(String hexString, char *originalString) {
+  int index = 0;
+  for (int i = 0; i < hexString.length(); i += 2) {
+    // Estrai due caratteri esadecimali
+    String hexPair = hexString.substring(i, i + 2);
+
+    // Converte i due caratteri esadecimali in un byte
+    char c = (char)strtol(hexPair.c_str(), NULL, 16);
+
+    // Memorizza il byte nella stringa originale
+    originalString[index++] = c;
+  }
+}
+
 bool send_p2p_data(String msg) {
 
   // Calcola la lunghezza necessaria per il vettore esadecimale
@@ -133,12 +157,12 @@ bool send_p2p_data(String msg) {
   stringToHexVector(msg, hexVector);
 
   String command = "at+send=lorap2p:";
-  DebugSerial.print(command);
-  DebugSerial.println(hexVector);
+  //DebugSerial.print(command);
+  //DebugSerial.println(hexVector);
   ATSerial.print(command);
   ATSerial.println(hexVector);
   String s = ATSerial.readString();
-  DebugSerial.println(s);
+  //DebugSerial.println(s);
   if (s.indexOf("OK") != -1) {
     return true;
   } else {
