@@ -11,7 +11,7 @@ Since the serial of the RAK811 module is not connected directly to the PC, I dec
 - Download the sketch "FirmwareDownloadMode" to Arduino nano Every
 - Install Java Runtime if needed "jre-8u431-windows-x64.exe"
 - Install SetupSTM32CubeProgrammer-2.1.0.exe
-- Power up the shield via Arduino while a red wire put high level to RAK811 pin 17 BOOT0
+- Power up the shield via Arduino while a red wire put high level to RAK811 pin 17 BOOT0 (see connections.jpeg)
 - Start STM32CubeProgrammer connect (see smt.png)
 - Press Erase button
 - Open RAK811_v3.0.0.14.H_20200810.hex , then press Download
@@ -42,10 +42,7 @@ Since the serial of the RAK811 module is not connected directly to the PC, I dec
 - Upgrade the firmware
 - Restart shield
 - In my case the module keep the original baudrate (9600)
-- Open RAK_SERIAL_PORT_TOOL_V1.2.1 , at 115200 test "at+version" command. 
+- Open RAK_SERIAL_PORT_TOOL_V1.2.1 , at 9600 test "at+version" command. 
 
  
-
-
-
-
+IMPORTANT!! You can downloads tools from v0.2.0 attached files.

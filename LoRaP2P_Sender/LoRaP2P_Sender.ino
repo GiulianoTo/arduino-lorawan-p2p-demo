@@ -177,7 +177,7 @@ void generate_p2p_message(void) {
   if (!send_p2p_data(s))
     DebugSerial.println("Error: unable to send p2p data !! ");
 
-  DebugSerial.println(s);
+  DebugSerial.println("SEND:" + s);
 }
 
 void setup() {

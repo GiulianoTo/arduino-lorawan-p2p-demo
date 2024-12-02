@@ -200,6 +200,7 @@ void receive_p2p_message(void) {
     // Converti la stringa esadecimale in stringa originale
     hexToString(s, originalString);
 
+    DebugSerial.print("RECEIVED:");
     DebugSerial.println(originalString);
   }
 }
