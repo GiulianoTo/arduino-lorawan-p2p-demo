@@ -22,7 +22,12 @@ For the demo I use
 Then: 
 - Download LoRaP2P_Receiver sketch to first device
 - Download LoRaP2P_Sender sketch to second device
-- Open two instance of 
+- Open two instance of Serial_console app.
+
+
+NOTE: Serial_console app is wrote in python. Please install pyqt6 and pyserial library.
+
+
 
 
 
